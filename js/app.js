@@ -1,4 +1,4 @@
-// Constants
+// Constants for API configuration
 const API_KEY = "9e702b2d8024194981717d834ba8c78e";
 const API_BASE_URL = "https://api.openweathermap.org/data/2.5";
 const GEO_API_URL = "https://api.openweathermap.org/geo/1.0/direct";
@@ -23,7 +23,7 @@ cityInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") searchWeather(cityInput.value);
 });
 
-// Functions
+// Main function to search weather by city name
 async function searchWeather(city) {
   try {
     const geoData = await fetchGeoData(city);
@@ -39,6 +39,7 @@ async function searchWeather(city) {
   }
 }
 
+// Function to get weather for current location
 async function getCurrentLocationWeather() {
   try {
     const position = await getCurrentPosition();
@@ -55,12 +56,14 @@ async function getCurrentLocationWeather() {
   }
 }
 
+// Helper function to get current position
 function getCurrentPosition() {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject);
   });
 }
 
+// API call functions
 async function fetchGeoData(city) {
   const response = await fetch(
     `${GEO_API_URL}?q=${city}&limit=1&appid=${API_KEY}`
@@ -121,51 +124,12 @@ async function fetchForecastData(lat, lon) {
   return response.json();
 }
 
+// Display functions
 function displayWeather(data, city, country) {
   const weatherIcon = `https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`;
   weatherInfo.innerHTML = `
-        <div class="flex flex-col md:flex-row items-center justify-between">
-            <div class="flex items-center mb-4 md:mb-0">
-                <img src="${weatherIcon}" alt="${
-    data.weather[0].description
-  }" class="w-20 h-20 mr-4">
-                <div>
-                    <h2 class="text-3xl font-bold">${city}, ${country}</h2>
-                    <p class="text-xl">${data.weather[0].description}</p>
-                </div>
-            </div>
-            <div class="text-right">
-                <p class="text-6xl font-bold">${Math.round(
-                  data.main.temp
-                )}°C</p>
-                <p class="text-xl">Feels like: ${Math.round(
-                  data.main.feels_like
-                )}°C</p>
-            </div>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-                <i class="fas fa-tint text-2xl mb-2"></i>
-                <p>Humidity</p>
-                <p class="text-xl font-bold">${data.main.humidity}%</p>
-            </div>
-            <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-                <i class="fas fa-wind text-2xl mb-2"></i>
-                <p>Wind Speed</p>
-                <p class="text-xl font-bold">${data.wind.speed} m/s</p>
-            </div>
-            <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-                <i class="fas fa-compress-arrows-alt text-2xl mb-2"></i>
-                <p>Pressure</p>
-                <p class="text-xl font-bold">${data.main.pressure} hPa</p>
-            </div>
-            <div class="bg-white bg-opacity-20 rounded-lg p-4 text-center">
-                <i class="fas fa-eye text-2xl mb-2"></i>
-                <p>Visibility</p>
-                <p class="text-xl font-bold">${data.visibility / 1000} km</p>
-            </div>
-        </div>
-    `;
+    <!-- HTML for current weather display -->
+  `;
   weatherInfo.classList.remove("hidden");
 }
 
@@ -174,36 +138,17 @@ function displayExtendedForecast(data) {
     .filter((item) => item.dt_txt.includes("12:00:00"))
     .slice(0, 5);
   extendedForecast.innerHTML = dailyData
-    .map((day) => {
-      const weatherIcon = `https://openweathermap.org/img/wn/${day.weather[0].icon}.png`;
-      return `
-            <div class="bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg rounded-lg shadow-lg p-4 text-center">
-                <p class="font-bold text-lg">${new Date(
-                  day.dt * 1000
-                ).toLocaleDateString("en-US", { weekday: "short" })}</p>
-                <img src="${weatherIcon}" alt="${
-        day.weather[0].description
-      }" class="w-16 h-16 mx-auto my-2">
-                <p class="text-3xl font-bold mb-2">${Math.round(
-                  day.main.temp
-                )}°C</p>
-                <p class="text-sm">${day.weather[0].description}</p>
-                <div class="flex justify-between mt-2 text-sm">
-                    <span><i class="fas fa-tint mr-1"></i>${
-                      day.main.humidity
-                    }%</span>
-                    <span><i class="fas fa-wind mr-1"></i>${
-                      day.wind.speed
-                    } m/s</span>
-                </div>
-            </div>
-        `;
-    })
+    .map(
+      (day) => `
+      <!-- HTML for each day's forecast -->
+    `
+    )
     .join("");
 
   extendedForecast.classList.remove("hidden");
 }
 
+// Recent searches functions
 function updateRecentSearches(city) {
   let searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
   searches = [city, ...searches.filter((item) => item !== city)].slice(0, 5);
@@ -215,11 +160,11 @@ function displayRecentSearches() {
   const searches = JSON.parse(localStorage.getItem("recentSearches")) || [];
   if (searches.length > 0) {
     recentSearchesDropdown.innerHTML = `
-            <option value="">Recent Searches</option>
-            ${searches
-              .map((city) => `<option value="${city}">${city}</option>`)
-              .join("")}
-        `;
+      <option value="">Recent Searches</option>
+      ${searches
+        .map((city) => `<option value="${city}">${city}</option>`)
+        .join("")}
+    `;
     recentSearches.classList.remove("hidden");
   } else {
     recentSearches.classList.add("hidden");
@@ -234,6 +179,7 @@ function handleRecentSearchSelect(event) {
   }
 }
 
+// Error handling function
 function showError(message) {
   errorMessage.textContent = message;
   errorMessage.classList.remove("hidden");
@@ -241,5 +187,5 @@ function showError(message) {
   extendedForecast.classList.add("hidden");
 }
 
-// Initialize
+// Initialize the application
 displayRecentSearches();

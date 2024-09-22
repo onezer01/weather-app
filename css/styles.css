@@ -1,0 +1,42 @@
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.backdrop-filter {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+#app {
+  max-width: 1200px;
+}
+
+#cityInput::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+#searchBtn,
+#currentLocationBtn {
+  min-width: 120px;
+}
+
+#recentSearchesDropdown {
+  background-color: rgb(146, 148, 255);
+}
+
+#weatherInfo,
+#extendedForecast > div {
+  transition: all 0.3s ease-in-out;
+}
+
+#weatherInfo:hover,
+#extendedForecast > div:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 640px) {
+  #extendedForecast {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
